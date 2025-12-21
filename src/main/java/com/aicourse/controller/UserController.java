@@ -23,4 +23,9 @@ public class UserController {
     public String home(){
         return "hello world";
     }
+
+    @GetMapping("/login")
+    public String verifyUser(@RequestBody Users user){
+        return service.verify(user);
+    }
 }
