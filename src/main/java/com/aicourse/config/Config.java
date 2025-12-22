@@ -36,6 +36,7 @@ public class Config {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(customizer -> customizer.disable())
+                .oauth2Login(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("register", "login")
                         .permitAll()
