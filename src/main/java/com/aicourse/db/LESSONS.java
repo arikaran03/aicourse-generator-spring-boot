@@ -1,4 +1,4 @@
-package com.ai.course_generator.db;
+package com.aicourse.db;
 
 public final class LESSONS {
 
