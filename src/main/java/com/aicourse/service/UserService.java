@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
+
 @Service
 public class UserService {
 
@@ -24,18 +26,34 @@ public class UserService {
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    public Users registerUser(Users user){
-        user.setPassword(encoder.encode(user.getPassword()));
-        return userRepo.save(user);
-    }
+//    public Users registerUser(Users user){
+//        user.setPassword(encoder.encode(user.getPassword()));
+//        return userRepo.save(user);
+//    }
+//
+//    public String verify(Users user){
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+//        );
+//        if(authentication.isAuthenticated()){
+//            return jwtService.generateToken(user.getUsername());
+//        }
+//        return "User not verified";
+//    }
 
-    public String verify(Users user){
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
-        );
-        if(authentication.isAuthenticated()){
-            return jwtService.generateToken(user.getUsername());
+        public Users registerUser(Users user){
+            user.setPassword(encoder.encode(user.getPassword()));
+            // Note: roles and timestamps are now handled automatically in Users.java @PrePersist
+            return userRepo.save(user);
         }
-        return "User not verified";
+
+        public String verify(Users user){
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+            );
+            if(authentication.isAuthenticated()){
+                return jwtService.generateToken(user.getUsername());
+            }
+            return "User not verified";
+        }
     }
-}
