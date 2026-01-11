@@ -3,6 +3,7 @@ package com.aicourse.service;
 import com.aicourse.model.Users;
 import com.aicourse.repo.UserRepo;
 import com.aicourse.service.JWT.JWTService;
+import com.aicourse.utils.id.SnowflakeIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,6 +43,7 @@ public class UserService {
 //    }
 
         public Users registerUser(Users user){
+            user.setId(SnowflakeIdGenerator.generateId());
             user.setPassword(encoder.encode(user.getPassword()));
             // Note: roles and timestamps are now handled automatically in Users.java @PrePersist
             return userRepo.save(user);

@@ -2,14 +2,12 @@ package com.aicourse.model;
 
 import jakarta.persistence.*;
 import org.springframework.data.domain.Persistable;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 
 @Entity
-@Table(name = "modules")
-public class Module implements Persistable<Long> {
+@Table(name = "lessons")
+public class Lesson implements Persistable<Long> {
 
     @Id
     @Column(nullable = false)
@@ -18,17 +16,16 @@ public class Module implements Persistable<Long> {
     @Column(nullable = false)
     private String title;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "course_id", nullable = false)
-    @JsonIgnore
-    private Course course;
+    // Flexible structured blocks
+    @Column(columnDefinition = "JSONB", nullable = false)
+    private String content;
 
-    @OneToMany(
-            mappedBy = "module",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<Lesson> lessons;
+    @Column(name = "is_enriched", nullable = false)
+    private boolean isEnriched = false;
+
+    @ManyToOne
+    @JoinColumn(name = "module_id")
+    private Module module;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
@@ -64,8 +61,10 @@ public class Module implements Persistable<Long> {
     public void setId(Long id) { this.id = id; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
-    public Course getCourse() { return course; }
-    public void setCourse(Course course) { this.course = course; }
-    public List<Lesson> getLessons() { return lessons; }
-    public void setLessons(List<Lesson> lessons) { this.lessons = lessons; }
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
+    public boolean isEnriched() { return isEnriched; }
+    public void setEnriched(boolean enriched) { isEnriched = enriched; }
+    public Module getModule() { return module; }
+    public void setModule(Module module) { this.module = module; }
 }

@@ -1,5 +1,6 @@
 package com.aicourse.model;
 
+import com.aicourse.utils.id.SnowflakeIdGenerator;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime; // Use OffsetDateTime for TIME ZONE support
 
@@ -8,7 +9,7 @@ import java.time.OffsetDateTime; // Use OffsetDateTime for TIME ZONE support
 public class Users {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -49,6 +50,7 @@ public class Users {
     // Automatically set timestamps and default role using JPA Lifecycle
     @PrePersist
     protected void onCreate() {
+        if (id == null) {id = SnowflakeIdGenerator.generateId();}
         if (createdAt == null) { createdAt = OffsetDateTime.now(); }
         if (updatedAt == null) { updatedAt = OffsetDateTime.now(); }
         // Set default role if missing
