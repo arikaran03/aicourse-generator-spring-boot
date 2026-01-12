@@ -184,5 +184,13 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="increase-title-lengths-v2" author="ari">
+        <validCheckSum>ANY</validCheckSum>
+        <modifyDataType tableName="courses" columnName="title" newDataType="VARCHAR(1000)"/>
+        <modifyDataType tableName="modules" columnName="title" newDataType="VARCHAR(1000)"/>
+        <modifyDataType tableName="lessons" columnName="title" newDataType="VARCHAR(1000)"/>
+        <modifyDataType tableName="users" columnName="password" newDataType="VARCHAR(512)"/>
+        <modifyDataType tableName="users" columnName="roles" newDataType="VARCHAR(512)"/>
+    </changeSet>
 
 </databaseChangeLog>
