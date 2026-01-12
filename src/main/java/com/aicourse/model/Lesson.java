@@ -1,6 +1,12 @@
 package com.aicourse.model;
 
+import com.aicourse.utils.json.JsonNodeConverter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.domain.Persistable;
 
 import java.time.OffsetDateTime;
@@ -11,20 +17,24 @@ public class Lesson implements Persistable<Long> {
 
     @Id
     @Column(nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     @Column(nullable = false)
     private String title;
 
     // Flexible structured blocks
-    @Column(columnDefinition = "JSONB", nullable = false)
-    private String content;
+    @Column(columnDefinition = "jsonb", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+
+    private JsonNode content;
 
     @Column(name = "is_enriched", nullable = false)
     private boolean isEnriched = false;
 
     @ManyToOne
     @JoinColumn(name = "module_id")
+    @JsonIgnore
     private Module module;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -61,8 +71,8 @@ public class Lesson implements Persistable<Long> {
     public void setId(Long id) { this.id = id; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
-    public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
+    public JsonNode getContent() { return content; }
+    public void setContent(JsonNode content) { this.content = content; }
     public boolean isEnriched() { return isEnriched; }
     public void setEnriched(boolean enriched) { isEnriched = enriched; }
     public Module getModule() { return module; }
