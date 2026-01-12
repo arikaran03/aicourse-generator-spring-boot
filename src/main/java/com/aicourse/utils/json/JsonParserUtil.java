@@ -28,4 +28,18 @@ public class JsonParserUtil {
             throw new IllegalArgumentException("Invalid JSON string", e);
         }
     }
+    public static String extractRawJson(String aiResponse) {
+        if (aiResponse == null || aiResponse.trim().isEmpty()) {
+            throw new IllegalArgumentException("AI response is empty");
+        }
+
+        String cleaned = aiResponse.trim();
+
+        if (cleaned.startsWith("```")) {
+            cleaned = cleaned.replaceAll("^```[a-zA-Z]*", "");
+            cleaned = cleaned.replaceAll("```$", "");
+        }
+
+        return cleaned.trim();
+    }
 }

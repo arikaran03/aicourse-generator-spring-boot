@@ -192,5 +192,16 @@
         <modifyDataType tableName="users" columnName="password" newDataType="VARCHAR(512)"/>
         <modifyDataType tableName="users" columnName="roles" newDataType="VARCHAR(512)"/>
     </changeSet>
+    <changeSet id="increase-course-creator-length" author="ari">
+        <modifyDataType
+                tableName="courses"
+                columnName="creator"
+                newDataType="TEXT"/>
+    </changeSet>
+    <changeSet id="courses-text-columns-v3" author="ari">
+        <modifyDataType tableName="courses" columnName="title" newDataType="TEXT"/>
+        <modifyDataType tableName="courses" columnName="creator" newDataType="TEXT"/>
+        <modifyDataType tableName="courses" columnName="description" newDataType="TEXT"/>
+    </changeSet>
 
 </databaseChangeLog>

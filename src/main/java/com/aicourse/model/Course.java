@@ -16,14 +16,14 @@ public class Course implements Persistable<Long> {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String title;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
     // Auth0 sub
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String creator;
 
     @OneToMany(
