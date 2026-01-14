@@ -4,6 +4,7 @@ import com.aicourse.model.Course;
 import com.aicourse.model.Module;
 import com.aicourse.service.courses.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,5 +36,10 @@ public class CourseController {
     @GetMapping("/{courseName}/modules")
     public List<Module> getModulesByCourseName(@PathVariable String courseName) {
         return courseService.getModulesByCourseName(courseName);
+    }
+    @DeleteMapping("/{courseId}")
+    public ResponseEntity<Void> deleteCourse(@PathVariable Long courseId) {
+        courseService.deleteCourse(courseId);
+        return ResponseEntity.noContent().build();
     }
 }

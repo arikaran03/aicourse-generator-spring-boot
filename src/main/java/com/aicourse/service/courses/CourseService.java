@@ -117,4 +117,11 @@ public class CourseService {
     public List<Module> getModulesByCourseName(String courseName) {
         return moduleRepo.findByCourse_Title(courseName);
     }
+
+    public void deleteCourse(Long courseId) {
+        if (!courseRepo.existsById(courseId)) {
+            throw new IllegalArgumentException("Course not found with id: " + courseId);
+        }
+        courseRepo.deleteById(courseId);
+    }
 }
