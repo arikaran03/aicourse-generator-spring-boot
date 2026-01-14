@@ -1,14 +1,18 @@
 package com.aicourse.service.courses;
 
 import com.aicourse.geminiConnection.geminiConnection;
+import com.aicourse.model.Course;
 import com.aicourse.model.Lesson;
 import com.aicourse.model.Module;
+import com.aicourse.repo.CourseRepo;
 import com.aicourse.repo.LessonRepo;
 import com.aicourse.utils.json.JsonParserUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class LessonService {
@@ -71,6 +75,30 @@ public class LessonService {
 
         return lessonRepo.save(lesson);
     }
+    @Transactional
+    public void enrichPendingLessonsLimited() {
+
+        List<Lesson> lessons = lessonRepo.findNext2PendingLessons();
+
+        if (lessons.isEmpty()) {
+            return;
+        }
+
+        for (Lesson lesson : lessons) {
+            try {
+                Long courseId = lesson.getModule().getCourse().getId();
+                Long moduleId = lesson.getModule().getId();
+                Long lessonId = lesson.getId();
+
+                generateLessonContent(courseId, moduleId, lessonId);
+            } catch (Exception e) {
+                // IMPORTANT: don't kill scheduler
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 
     public Lesson getLesson(Long lessonId) {
         return lessonRepo.findById(lessonId)
