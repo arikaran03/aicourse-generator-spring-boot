@@ -20,6 +20,6 @@ public class LessonEnrichmentScheduler {
                         Thread.currentThread().getName()
         );
 
-        lessonService.enrichPendingLessonsLimited();
+//        lessonService.enrichPendingLessonsLimited(); // Temporarily commented out due to a high number of API calls when multiple courses are being created
     }
 }
