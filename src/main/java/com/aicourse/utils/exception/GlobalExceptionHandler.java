@@ -1,4 +1,4 @@
-package com.aicourse.utils.Exception;
+package com.aicourse.utils.exception;
 
 import com.aicourse.utils.api.ApiResponse;
 import org.springframework.http.ResponseEntity;
