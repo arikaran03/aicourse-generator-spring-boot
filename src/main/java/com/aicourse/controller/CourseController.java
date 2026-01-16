@@ -5,6 +5,7 @@ import com.aicourse.model.Module;
 import com.aicourse.service.courses.CourseService;
 import com.aicourse.utils.api.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +40,11 @@ public class CourseController {
         return courseService.getModulesByCourseName(courseName);
     }
     @DeleteMapping("/{courseId}")
-    public ResponseEntity<ApiResponse<Object>> deleteCourse(@PathVariable Long courseId) {
+    public ResponseEntity<ApiResponse<Object>> deleteCourse(
+            @PathVariable Long courseId) {
+
         courseService.deleteCourse(courseId);
+
         return ResponseEntity.ok(
                 ApiResponse.success("Course deleted successfully", null)
         );

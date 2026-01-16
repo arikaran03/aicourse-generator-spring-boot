@@ -51,7 +51,7 @@ public class CourseService {
               "title": "Course Title",
               "description": "Course Description",
               "modules": [
-                {
+                { 
                   "title": "Module Title",
                   "lessons": ["Lesson 1", "Lesson 2"]
                 }
@@ -118,7 +118,7 @@ public class CourseService {
         return moduleRepo.findByCourse_Title(courseName);
     }
 
-    public void deleteCourse(Long courseId) {
+    public void deleteCourse(Long courseId){
         if (!courseRepo.existsById(courseId)) {
             throw new IllegalArgumentException("Course not found with id: " + courseId);
         }
