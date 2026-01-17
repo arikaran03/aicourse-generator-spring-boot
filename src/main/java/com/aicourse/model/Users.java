@@ -1,5 +1,6 @@
 package com.aicourse.model;
 
+import com.aicourse.enums.UserRole;
 import com.aicourse.utils.id.SnowflakeIdGenerator;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime; // Use OffsetDateTime for TIME ZONE support
@@ -18,8 +19,9 @@ public class Users {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String roles;
+    private UserRole roles;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
@@ -38,8 +40,8 @@ public class Users {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    public String getRoles() { return roles; }
-    public void setRoles(String roles) { this.roles = roles; }
+    public UserRole getRoles() { return roles; }
+    public void setRoles(UserRole roles) { this.roles = roles; }
 
     public OffsetDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(OffsetDateTime createdAt) { this.createdAt = createdAt; }
@@ -54,7 +56,7 @@ public class Users {
         if (createdAt == null) { createdAt = OffsetDateTime.now(); }
         if (updatedAt == null) { updatedAt = OffsetDateTime.now(); }
         // Set default role if missing
-        if (roles == null) { roles = "USER"; }
+        if (roles == null) { roles = UserRole.USER; }
     }
 
     @PreUpdate
