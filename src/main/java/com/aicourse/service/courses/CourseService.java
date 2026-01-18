@@ -124,4 +124,22 @@ public class CourseService {
         }
         courseRepo.deleteById(courseId);
     }
+
+    public void updateCourse(Long courseID, Course courseDO){
+        Course course = courseRepo.findById(courseID).orElseThrow(() -> new RuntimeException("Course not found"));
+
+        if(courseDO.getTitle() != null){
+            course.setTitle(courseDO.getTitle());
+        }
+        if(courseDO.getCreator() != null){
+            course.setCreator(courseDO.getCreator());
+        }
+        if(courseDO.getDescription() != null){
+            course.setDescription(courseDO.getDescription());
+        }
+        if(courseDO.getModules() != null){
+            course.setModules(courseDO.getModules());
+        }
+        courseRepo.save(course);
+    }
 }

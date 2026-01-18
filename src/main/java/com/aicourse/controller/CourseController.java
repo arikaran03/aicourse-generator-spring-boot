@@ -24,6 +24,14 @@ public class CourseController {
     public Course createCourse(@RequestBody Map<String, String> payload, Authentication auth) {
         return courseService.generateCourse(payload, auth.getName());
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Object>> updateCourseName(@PathVariable("id") Long courseId, @RequestBody Course courseDO
+    ) {
+        courseService.updateCourse(courseId, courseDO);
+        return ResponseEntity.ok(
+                ApiResponse.success("Course updated successfully", null)
+        );
+    }
 
     @GetMapping
     public List<Course> getMyCourses(Authentication auth) {
