@@ -1,5 +1,8 @@
 package com.aicourse.controller;
 
+import com.aicourse.dto.LoginResponse;
+import com.aicourse.dto.UserResponse;
+import com.aicourse.model.UserPrincipal;
 import com.aicourse.model.Users;
 import com.aicourse.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +24,20 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String verifyUser(@RequestBody Users user) {
+    public LoginResponse verifyUser(@RequestBody Users user) {
         return service.verify(user); // returns JWT
     }
 
-    // 🔹 Used by frontend to check login status
     @GetMapping("/me")
     public ResponseEntity<?> me(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(authentication.getPrincipal());
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        Users user = principal.getUser();
+
+        return ResponseEntity.ok(
+                new UserResponse(user.getId(), user.getUsername(), user.getRoles())
+        );
     }
 }
-

@@ -1,8 +1,11 @@
 package com.aicourse.service;
 
+import com.aicourse.dto.LoginResponse;
+import com.aicourse.dto.UserResponse;
 import com.aicourse.model.Users;
 import com.aicourse.repo.UserRepo;
 import com.aicourse.service.JWT.JWTService;
+import com.aicourse.utils.exception.AuthenticationFailedException;
 import com.aicourse.utils.id.SnowflakeIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -49,13 +52,17 @@ public class UserService {
             return userRepo.save(user);
         }
 
-        public String verify(Users user){
+        public LoginResponse verify(Users user){
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
             );
             if(authentication.isAuthenticated()){
-                return jwtService.generateToken(user.getUsername());
+                String token = jwtService.generateToken(user.getUsername());
+                Users currentUser = userRepo.findByUsername(user.getUsername());
+                return new LoginResponse(token, new UserResponse(currentUser));
             }
-            return "User not verified";
+            else{
+                throw new AuthenticationFailedException("User is not verified");
+            }
         }
     }
