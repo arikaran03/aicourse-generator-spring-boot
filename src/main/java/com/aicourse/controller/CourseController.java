@@ -2,10 +2,9 @@ package com.aicourse.controller;
 
 import com.aicourse.model.Course;
 import com.aicourse.model.Module;
-import com.aicourse.service.courses.CourseService;
+import com.aicourse.service.courses.impl.CourseServiceImpl;
 import com.aicourse.utils.api.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -18,16 +17,16 @@ import java.util.Map;
 public class CourseController {
 
     @Autowired
-    private CourseService courseService;
+    private CourseServiceImpl courseServiceImpl;
 
     @PostMapping("/generate")
     public Course createCourse(@RequestBody Map<String, String> payload, Authentication auth) {
-        return courseService.generateCourse(payload, auth.getName());
+        return courseServiceImpl.generateCourse(payload, auth.getName());
     }
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> updateCourseName(@PathVariable("id") Long courseId, @RequestBody Course courseDO
     ) {
-        courseService.updateCourse(courseId, courseDO);
+        courseServiceImpl.updateCourse(courseId, courseDO);
         return ResponseEntity.ok(
                 ApiResponse.success("Course updated successfully", null)
         );
@@ -35,23 +34,23 @@ public class CourseController {
 
     @GetMapping
     public List<Course> getMyCourses(Authentication auth) {
-        return courseService.getCoursesByCreator(auth.getName());
+        return courseServiceImpl.getCoursesByCreator(auth.getName());
     }
 
     @GetMapping("/{id}")
     public Course getCourse(@PathVariable Long id) {
-        return courseService.getCourseById(id);
+        return courseServiceImpl.getCourseById(id);
     }
 
     @GetMapping("/{courseName}/modules")
     public List<Module> getModulesByCourseName(@PathVariable String courseName) {
-        return courseService.getModulesByCourseName(courseName);
+        return courseServiceImpl.getModulesByCourseName(courseName);
     }
     @DeleteMapping("/{courseId}")
     public ResponseEntity<ApiResponse<Object>> deleteCourse(
             @PathVariable Long courseId) {
 
-        courseService.deleteCourse(courseId);
+        courseServiceImpl.deleteCourse(courseId);
 
         return ResponseEntity.ok(
                 ApiResponse.success("Course deleted successfully", null)
