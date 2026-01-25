@@ -2,6 +2,7 @@ package com.aicourse.config;
 
 // ... keeping your existing imports ...
 import com.aicourse.filter.JWTFilter;
+import com.aicourse.service.JWT.impl.AuthenticationSuccessHandlerImpl;
 import com.aicourse.service.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +32,9 @@ public class Config {
     @Autowired
     private JWTFilter jwtFilter;
 
+    @Autowired
+    private AuthenticationSuccessHandlerImpl authenticationSuccessHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -40,7 +44,7 @@ public class Config {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
                 .oauth2Login(oauth -> oauth
-                        .defaultSuccessUrl("http://localhost:5173/", true)
+                        .successHandler(authenticationSuccessHandler)
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(

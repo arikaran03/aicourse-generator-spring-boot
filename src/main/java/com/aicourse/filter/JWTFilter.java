@@ -62,26 +62,34 @@ public class JWTFilter extends OncePerRequestFilter {
                 return;
             }
 
-            String token = authHeader.substring(7);
+            String token = authHeader.substring(7).trim();
+            System.out.println("JWTFilter: Extracted Token: [" + token + "]");
             String username = jwtService.extractUserName(token);
 
             if (username != null &&
                     SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                UserDetails userDetails =
-                        context.getBean(UserDetailService.class).loadUserByUsername(username);
+                try {
+                    UserDetails userDetails = context.getBean(UserDetailService.class).loadUserByUsername(username);
 
-                if (jwtService.validateToken(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails, null, userDetails.getAuthorities()
-                            );
+                    if (jwtService.validateToken(token, userDetails)) {
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(
+                                        userDetails, null, userDetails.getAuthorities()
+                                );
 
-                    authToken.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
+                        authToken.setDetails(
+                                new WebAuthenticationDetailsSource().buildDetails(request)
+                        );
 
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                        System.out.println("JWTFilter: Authentication successful for user " + username);
+                    } else {
+                        System.out.println("JWTFilter: Token invalid for user " + username);
+                    }
+                } catch (Exception e) {
+                    System.out.println("JWTFilter: Authentication failed for user " + username + ": " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
 

@@ -22,17 +22,11 @@ import java.util.Map;
 public class JWTService {
 
 
-    private String secretKey = "";
+    // Use a static key for development to avoid issues with restarts invalidating tokens
+    private String secretKey = "MySuperSecretKeyForJWTTokenGenerationWhichShouldBeLongEnough";
 
     public JWTService() {
-        KeyGenerator keyGen = null;
-        try {
-            keyGen = KeyGenerator.getInstance("HmacSha256");
-            SecretKey secretKey = keyGen.generateKey();
-            this.secretKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        // No dynamic generation
     }
 
     public String generateToken(String username) {
@@ -44,7 +38,7 @@ public class JWTService {
                 .add(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 60))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
                 .and()
                 .signWith(getKey())
                 .compact();
