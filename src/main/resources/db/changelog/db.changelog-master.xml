@@ -204,4 +204,6 @@
         <modifyDataType tableName="courses" columnName="description" newDataType="TEXT"/>
     </changeSet>
 
+    <include file="db/changelog/db.changelog-leaderboard.xml"/>
+<!--    <include file="db/changelog/db.changelog-populateDb.xml"/>-->
 </databaseChangeLog>
