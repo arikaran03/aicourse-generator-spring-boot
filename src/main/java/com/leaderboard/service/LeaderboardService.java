@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface LeaderboardService {
     List<LeaderboardResponseDTO> getLeaderBorad();
-    UserRankDTO getUserRank(Long userId);
+
+    UserRankDTO getUserRankDTO(Long userId);
 }

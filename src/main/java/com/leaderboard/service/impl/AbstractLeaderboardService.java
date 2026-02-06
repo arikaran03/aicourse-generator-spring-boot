@@ -29,5 +29,6 @@ public abstract class AbstractLeaderboardService implements LeaderboardService{
 
                     ).toList();
     }
-    protected abstract Integer getScore(UserStats user);
+
+    protected abstract int getScore(UserStats user);
 }
