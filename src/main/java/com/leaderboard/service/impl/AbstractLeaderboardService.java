@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractLeaderboardService implements LeaderboardService{
 
-    private final UserStatsRepository userStatsRepository;
+    protected final UserStatsRepository userStatsRepository;
 
     protected AbstractLeaderboardService(UserStatsRepository userStatsRepository) {
         this.userStatsRepository = userStatsRepository;
