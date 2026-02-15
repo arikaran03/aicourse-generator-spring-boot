@@ -4,10 +4,10 @@ import com.aicourse.model.Lesson;
 
 public interface LessonService {
 
-    Lesson generateLessonContent(Long courseId, Long moduleId, Long lessonId);
+    Lesson generateLessonContent(Long courseId, Long moduleId, Long lessonId) throws Exception;
 
-    void enrichPendingLessonsLimited();
+    void enrichPendingLessonsLimited() throws Exception;
 
-    Lesson getLesson(Long lessonId);
+    Lesson getLesson(Long lessonId) throws Exception;
 
 }

@@ -1,25 +1,27 @@
 package com.aicourse.scheduler;
 
-import com.aicourse.service.courses.LessonService;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
-//@Component
-//public class LessonEnrichmentScheduler {
+// @Component
+// public class LessonEnrichmentScheduler {
 //
-//    private final LessonService lessonService;
+// private static final Logger logger =
+// LoggerFactory.getLogger(LessonEnrichmentScheduler.class);
 //
-//    public LessonEnrichmentScheduler(LessonService lessonService) {
-//        this.lessonService = lessonService;
-//    }
+// private final LessonService lessonService;
 //
-//    @Scheduled(fixedRate = 60_000)
-//    public void enrichLessonsJob() {
-//        System.out.println(
-//                "[SCHEDULER] Triggered on thread: " +
-//                        Thread.currentThread().getName()
-//        );
+// public LessonEnrichmentScheduler(LessonService lessonService) {
+// this.lessonService = lessonService;
+// }
 //
-//        lessonService.enrichPendingLessonsLimited(); // Temporarily commented out due to a high number of API calls when multiple courses are being created
-//    }
-//}
+// @Scheduled(fixedRate = 60_000)
+// public void enrichLessonsJob() {
+// logger.debug("[SCHEDULER] Triggered on thread: {}",
+// Thread.currentThread().getName());
+//
+// try {
+// lessonService.enrichPendingLessonsLimited(); // Temporarily commented out due
+// to a high number of API calls when multiple courses are being created
+// } catch (Exception e) {
+// logger.error("Job failed: {}", e.getMessage(), e);
+// }
+// }
+// }

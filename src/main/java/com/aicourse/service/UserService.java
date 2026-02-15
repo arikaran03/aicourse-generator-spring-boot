@@ -14,10 +14,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class UserService {
+
+    private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
 
     @Autowired
     private UserRepo userRepo;
@@ -28,41 +31,44 @@ public class UserService {
     @Autowired
     private JWTService jwtService;
 
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-//    public Users registerUser(Users user){
-//        user.setPassword(encoder.encode(user.getPassword()));
-//        return userRepo.save(user);
-//    }
-//
-//    public String verify(Users user){
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
-//        );
-//        if(authentication.isAuthenticated()){
-//            return jwtService.generateToken(user.getUsername());
-//        }
-//        return "User not verified";
-//    }
-
-        public Users registerUser(Users user){
+    public Users registerUser(Users user) {
+        LOGGER.log(Level.INFO, "Attempting to register new user: {0}", new Object[]{user.getUsername()});
+        try {
             user.setId(SnowflakeIdGenerator.generateId());
             user.setPassword(encoder.encode(user.getPassword()));
-            // Note: roles and timestamps are now handled automatically in Users.java @PrePersist
-            return userRepo.save(user);
+            // Note: roles and timestamps are now handled automatically in Users.java
+            // @PrePersist
+            Users savedUser = userRepo.save(user);
+            LOGGER.log(Level.INFO, "User registered successfully with ID: {0}", new Object[]{savedUser.getId()});
+            return savedUser;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Registration failed for user: {0}: {1}",
+                    new Object[]{user.getUsername(), e.getMessage()});
+            throw e;
         }
+    }
 
-        public LoginResponse verify(Users user){
+    public LoginResponse verify(Users user) {
+        LOGGER.log(Level.INFO, "Attempting to verify user: {0}", new Object[]{user.getUsername()});
+        try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
-            );
-            if(authentication.isAuthenticated()){
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+
+            if (authentication.isAuthenticated()) {
+                LOGGER.log(Level.INFO, "Authentication successful for user: {0}", new Object[]{user.getUsername()});
                 String token = jwtService.generateToken(user.getUsername());
                 Users currentUser = userRepo.findByUsername(user.getUsername());
                 return new LoginResponse(token, new UserResponse(currentUser));
-            }
-            else{
+            } else {
+                LOGGER.log(Level.WARNING, "Authentication failed for user: {0}", new Object[]{user.getUsername()});
                 throw new AuthenticationFailedException("User is not verified");
             }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Login process interrupted for user: {0}: {1}",
+                    new Object[]{user.getUsername(), e.getMessage()});
+            throw e;
         }
     }
+}

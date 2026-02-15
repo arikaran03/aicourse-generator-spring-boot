@@ -4,33 +4,33 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cglib.core.internal.Function;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class JWTService {
 
+    private static final Logger LOGGER = Logger.getLogger(JWTService.class.getName());
 
-    // Use a static key for development to avoid issues with restarts invalidating tokens
-    private String secretKey = "MySuperSecretKeyForJWTTokenGenerationWhichShouldBeLongEnough";
+    // Use a static key for development to avoid issues with restarts invalidating
+    // tokens
+    private final String secretKey = "MySuperSecretKeyForJWTTokenGenerationWhichShouldBeLongEnough";
 
     public JWTService() {
         // No dynamic generation
     }
 
     public String generateToken(String username) {
-        Map<String , Object> claims = new HashMap<>();
+        LOGGER.log(Level.FINE, "Generating JWT token for user: {0}", new Object[]{username});
+        Map<String, Object> claims = new HashMap<>();
 
         return Jwts
                 .builder()
@@ -42,7 +42,6 @@ public class JWTService {
                 .and()
                 .signWith(getKey())
                 .compact();
-
     }
 
     private SecretKey getKey() {
@@ -70,11 +69,20 @@ public class JWTService {
 
     public boolean validateToken(String token, UserDetails userDetails) {
         final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        boolean isValid = (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        if (!isValid) {
+            LOGGER.log(Level.WARNING, "JWT Token validation failed for user: {0}",
+                    new Object[]{userDetails.getUsername()});
+        }
+        return isValid;
     }
 
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        boolean expired = extractExpiration(token).before(new Date());
+        if (expired) {
+            LOGGER.log(Level.WARNING, "JWT Token is expired.");
+        }
+        return expired;
     }
 
     private Date extractExpiration(String token) {
