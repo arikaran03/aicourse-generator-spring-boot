@@ -36,7 +36,7 @@ public class CourseController {
         }
     }
 
-    @PostMapping("/{courseId}")
+    @PutMapping("/{courseId}")
     public ResponseEntity<ApiResponse<Course>> updateCourseName(@PathVariable Long courseId,
                                                                 @RequestBody Course courseDO) throws Exception {
         LOGGER.log(Level.INFO, "Request received to update course ID: {0}", new Object[]{courseId});
