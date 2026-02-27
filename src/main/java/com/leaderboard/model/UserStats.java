@@ -1,7 +1,6 @@
 package com.leaderboard.model;
 
-import com.aicourse.model.Users;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.aicourse.utils.id.SnowflakeIdGenerator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -12,31 +11,32 @@ import jakarta.persistence.Table;
 public class UserStats {
 
     @Id
-    @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @Column(name = "userstate_id", nullable = false, updatable = false)
     private Long userstateId;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;
 
-    @Column(nullable = false)
+    @Column(name = "total_points", nullable = false)
     private Integer totalPoints;
 
-    @Column(nullable = false)
+    @Column(name = "weekly_points", nullable = false)
     private Integer weeklyPoints;
 
-    @Column(nullable = false)
+    @Column(name = "courses_completed", nullable = false)
     private Integer coursesCompleted;
 
-    @Column(nullable = false)
+    @Column(name = "lessons_completed", nullable = false)
     private Integer lessonsCompleted;
 
-    @Column(nullable = false)
+    @Column(name = "current_streak", nullable = false)
     private Integer currentStreak;
 
-    protected UserStats(){}
+    protected UserStats() {
+    }
 
     public UserStats(Long userId) {
+        this.userstateId = SnowflakeIdGenerator.generateId(); // generate immediately
         this.userId = userId;
         this.totalPoints = 0;
         this.weeklyPoints = 0;
@@ -70,26 +70,12 @@ public class UserStats {
         this.currentStreak = 0;
     }
 
-
-
-    public Long getUserstateid() {
+    public Long getUserstateId() {
         return userstateId;
     }
 
     public Long getUserId() {
         return userId;
-    }
-
-    public Integer getCurrentStreak() {
-        return currentStreak;
-    }
-
-    public Integer getLessonsCompleted() {
-        return lessonsCompleted;
-    }
-
-    public Integer getCoursesCompleted() {
-        return coursesCompleted;
     }
 
     public Integer getTotalPoints() {
@@ -98,5 +84,17 @@ public class UserStats {
 
     public Integer getWeeklyPoints() {
         return weeklyPoints;
+    }
+
+    public Integer getCoursesCompleted() {
+        return coursesCompleted;
+    }
+
+    public Integer getLessonsCompleted() {
+        return lessonsCompleted;
+    }
+
+    public Integer getCurrentStreak() {
+        return currentStreak;
     }
 }

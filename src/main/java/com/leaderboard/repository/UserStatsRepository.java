@@ -33,4 +33,5 @@ public interface UserStatsRepository extends JpaRepository<UserStats, Long> {
         SET u.weeklyPoints = 0
     """)
     void resetWeeklyPoints();
+
 }

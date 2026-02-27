@@ -7,6 +7,7 @@ import com.aicourse.repo.LessonRepo;
 import com.aicourse.service.courses.LessonService;
 import com.aicourse.utils.json.JsonParserUtil;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leaderboard.model.impl.UserStatsService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,9 +27,12 @@ public class LessonServiceImpl implements LessonService {
     @Autowired
     private GeminiConnection geminiConnection;
 
+    @Autowired
+    private UserStatsService userStatsService;
+
     @Override
     @Transactional
-    public Lesson generateLessonContent(Long courseId, Long moduleId, Long lessonId) throws Exception {
+    public Lesson generateLessonContent(Long courseId, Long moduleId, Long lessonId, Long userId) throws Exception {
         LOGGER.log(Level.INFO, "Generating content for Lesson ID: {0} (Module ID: {1}, Course ID: {2})",
                 new Object[]{lessonId, moduleId, courseId});
 
@@ -85,6 +89,10 @@ public class LessonServiceImpl implements LessonService {
             lesson.setContent(contentJson);
             lesson.setEnriched(true);
 
+            if (userId != null) {
+                userStatsService.recordLessonCompleted(userId, courseId);
+            }
+
             Lesson savedLesson = lessonRepo.save(lesson);
 
             LOGGER.log(Level.INFO, "Lesson ID: {0} content generated and saved successfully", new Object[]{lessonId});
@@ -116,7 +124,7 @@ public class LessonServiceImpl implements LessonService {
                 Long lessonId = lesson.getId();
 
                 LOGGER.log(Level.INFO, "Enriching Lesson ID: {0}...", new Object[]{lessonId});
-                generateLessonContent(courseId, moduleId, lessonId);
+                generateLessonContent(courseId, moduleId, lessonId, null); // this call is for background run so we don't need userid so far this lesson generation
             } catch (Exception e) {
                 // IMPORTANT: don't kill scheduler
                 LOGGER.log(Level.SEVERE, "Error enriching pending lesson ID: {0}: {1}",

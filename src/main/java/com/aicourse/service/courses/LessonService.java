@@ -4,7 +4,7 @@ import com.aicourse.model.Lesson;
 
 public interface LessonService {
 
-    Lesson generateLessonContent(Long courseId, Long moduleId, Long lessonId) throws Exception;
+    Lesson generateLessonContent(Long courseId, Long moduleId, Long lessonId, Long userId) throws Exception;
 
     void enrichPendingLessonsLimited() throws Exception;
 
