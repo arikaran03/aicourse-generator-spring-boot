@@ -5,7 +5,6 @@ import com.leaderboard.dto.UserRankDTO;
 import com.leaderboard.model.UserStats;
 import com.leaderboard.repository.UserStatsRepository;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,12 +22,12 @@ public class GlobalLeaderboardService extends AbstractLeaderboardService {
     }
 
     @Override
-    public List<LeaderboardResponseDTO> getLeaderBorad() {
+    public List<LeaderboardResponseDTO> getLeaderBorad() throws Exception {
         return buildLeaderBoard(getTopGlobalUsers());
     }
 
     @Override
-    public UserRankDTO getUserRankDTO(Long userId) {
+    public UserRankDTO getUserRankDTO(Long userId) throws Exception {
         List<UserStats> Users = getTopGlobalUsers();
 
         AtomicInteger rank = new AtomicInteger(1);
@@ -48,9 +47,7 @@ public class GlobalLeaderboardService extends AbstractLeaderboardService {
 
     @Cacheable(value = "globalLeaderboard")
     public List<UserStats> getTopGlobalUsers() {
-        return userStatsRepository
-                .findGlobalLeaderboard(PageRequest.of(0, 10))
-                .getContent();
+        return userStatsRepository.findGlobalLeaderboard();
     }
 
     public void getrank() {
