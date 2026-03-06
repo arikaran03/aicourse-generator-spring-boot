@@ -1,11 +1,10 @@
 package com.leaderboard.service.impl;
 
 import com.leaderboard.dto.LeaderboardResponseDTO;
+import com.leaderboard.dto.PagedLeaderboardDTO;
 import com.leaderboard.dto.UserRankDTO;
 import com.leaderboard.model.UserStats;
 import com.leaderboard.repository.UserStatsRepository;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,33 +23,36 @@ public class GlobalLeaderboardService extends AbstractLeaderboardService {
     }
 
     @Override
-    public List<LeaderboardResponseDTO> getLeaderBorad() {
-        return buildLeaderBoard(getTopGlobalUsers(0, 10));
+    public PagedLeaderboardDTO getTopGlobalUsers(int page, int size) {
+        List<UserStats> all = userStatsRepository.findAllOrderByTotalPoints();
+        return paginate(all, page, size);
     }
 
     @Override
     public UserRankDTO getUserRankDTO(Long userId) {
-        List<UserStats> users = getTopGlobalUsers(0, 10);
-
+        List<UserStats> all = fetchAllOrdered();
         AtomicInteger rank = new AtomicInteger(1);
-
-        for (UserStats user : users) {
+        for (UserStats user : all) {
             if (userId.equals(user.getUserId())) {
-                return new UserRankDTO(
-                        rank.get(),
-                        user.getUserId(),
-                        getScore(user)
-                );
+                return new UserRankDTO(rank.get(), user.getUserId(), getScore(user));
             }
             rank.incrementAndGet();
         }
         return null;
     }
 
-    @Cacheable(value = "globalLeaderboard")
-    public List<UserStats> getTopGlobalUsers(int page, int size) {
-        return userStatsRepository
-                .findGlobalLeaderboard(PageRequest.of(page, size))
-                .getContent();
+    private List<UserStats> fetchAllOrdered() {
+        return userStatsRepository.findAllOrderByTotalPoints();
+    }
+
+    private PagedLeaderboardDTO paginate(List<UserStats> all, int page, int size) {
+        int total = all.size();
+        int fromIndex = Math.min(page * size, total);
+        int toIndex = Math.min(fromIndex + size, total);
+
+        List<LeaderboardResponseDTO> paged = buildLeaderBoard(all.subList(fromIndex, toIndex));
+
+        int totalPages = (int) Math.ceil((double) total / size);
+        return new PagedLeaderboardDTO(paged, page, size, total, totalPages);
     }
 }
